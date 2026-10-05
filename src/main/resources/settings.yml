@@ -1,0 +1,66 @@
+# =======================================================
+#               EasySettings Modern Settings
+# =======================================================
+
+settings:
+  fly:
+    name: "&#66FCF1&lғʟɪɢʜᴛ ᴍᴏᴅᴇ"
+    slot: 11
+    type: "TOGGLE"
+    default-state: false
+    permission: "easysettings.setting.fly"
+    item: "FEATHER"
+    glowing: false
+    description:
+      - "&#868E96Toggle your ability to fly freely."
+      - ""
+      - "&#495057│ &#868E96Status: %status%"
+      - ""
+      - "&#66FCF1▸ Click to toggle"
+    actions-on:
+      - "[player] fly"
+      - "[sound] ENTITY_EXPERIENCE_ORB_PICKUP:1.0:1.0"
+      - "[message] &#66FCF1&lғʟɪɢʜᴛ &#495057» &#51CF66ғʟɪɢʜᴛ ᴍᴏᴅᴇ ᴇɴᴀʙʟᴇᴅ!"
+    actions-off:
+      - "[player] fly"
+      - "[sound] BLOCK_NOTE_BLOCK_BASS:1.0:0.5"
+      - "[message] &#66FCF1&lғʟɪɢʜᴛ &#495057» &#FF6B6Bғʟɪɢʜᴛ ᴍᴏᴅᴇ ᴅɪsᴀʙʟᴇᴅ!"
+
+  night_vision:
+    name: "&#FFA94D&lɴɪɢʜᴛ ᴠɪsɪᴏɴ"
+    slot: 13
+    type: "TOGGLE"
+    default-state: false
+    permission: ""
+    item: "GOLDEN_CARROT"
+    glowing: false
+    description:
+      - "&#868E96Toggle permanent night vision effect."
+      - ""
+      - "&#495057│ &#868E96Status: %status%"
+      - ""
+      - "&#FFA94D▸ Click to toggle"
+    actions-on:
+      - "[console] effect give %player% night_vision infinite 1 true"
+      - "[sound] ENTITY_PLAYER_LEVELUP:1.0:1.5"
+      - "[message] &#FFA94D&lᴠɪsɪᴏɴ &#495057» &#51CF66ɴɪɢʜᴛ ᴠɪsɪᴏɴ ᴇɴᴀʙʟᴇᴅ!"
+    actions-off:
+      - "[console] effect clear %player% night_vision"
+      - "[sound] BLOCK_NOTE_BLOCK_BASS:1.0:0.5"
+      - "[message] &#FFA94D&lᴠɪsɪᴏɴ &#495057» &#FF6B6Bɴɪɢʜᴛ ᴠɪsɪᴏɴ ᴅɪsᴀʙʟᴇᴅ!"
+
+  spawn:
+    name: "&#FF7597&lsᴘᴀᴡɴ ᴛᴇʟᴇᴘᴏʀᴛ"
+    slot: 15
+    type: "ACTION"
+    permission: ""
+    item: "COMPASS"
+    glowing: true
+    description:
+      - "&#868E96Instantly warp to the server spawn point."
+      - ""
+      - "&#FF7597▸ Click to teleport"
+    actions:
+      - "[player] spawn"
+      - "[close]"
+      - "[sound] ENTITY_ENDERMAN_TELEPORT:1.0:1.0"

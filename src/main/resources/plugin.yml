@@ -1,0 +1,22 @@
+name: EasySettings
+version: 1.0.0
+main: com.easysettings.EasySettings
+api-version: '1.20'
+author: EasySettings
+description: A customizable GUI settings plugin with a robust Developer API and in-game editor.
+softdepend: [PlaceholderAPI]
+
+commands:
+  setting:
+    description: Open the settings GUI or manage settings.
+    aliases: [settings, esettings, easysettings]
+    permission: easysettings.use
+    usage: /setting [add|delete|edit|list|reload|help]
+
+permissions:
+  easysettings.use:
+    description: Allows players to open the settings GUI.
+    default: true
+  easysettings.admin:
+    description: Allows administrators to manage settings in-game and reload.
+    default: op

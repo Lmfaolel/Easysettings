@@ -1,0 +1,58 @@
+# =======================================================
+#               EasySettings Modern Configuration
+# =======================================================
+
+gui:
+  # Title of the GUI. Supports Hex (&#66FCF1), legacy (&a), and small caps tags (<sc>text</sc>)
+  title: "&#66FCF1&lᴘʟᴀʏᴇʀ sᴇᴛᴛɪɴɢs"
+
+  # Size of the GUI in slots. Must be 9, 18, 27, 36, 45, or 54.
+  size: 27
+
+  # Placeholder text for %status% in setting lore
+  status:
+    enabled: "&#51CF66● ᴇɴᴀʙʟᴇᴅ"
+    disabled: "&#FF6B6B○ ᴅɪsᴀʙʟᴇᴅ"
+
+  # Background glass pane filler for empty slots
+  filler:
+    enabled: true
+    material: "GRAY_STAINED_GLASS_PANE"
+    name: " "
+
+  # Close button at the bottom of the GUI
+  close-button:
+    enabled: true
+    slot: 22
+    material: "BARRIER"
+    name: "&#FF6B6B&l✕ ᴄʟᴏsᴇ ᴍᴇɴᴜ"
+    lore:
+      - "&#868E96Click to exit the settings menu."
+
+messages:
+  prefix: "&#66FCF1&lsᴇᴛᴛɪɴɢs &#495057» &#CED4DA"
+  no-permission: "&#FF6B6B✖ &#CED4DAʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪssɪᴏɴ ᴛᴏ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ."
+  only-players: "&#FF6B6B✖ &#CED4DAᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ʀᴜɴ ʙʏ ᴘʟᴀʏᴇʀs."
+  unknown-command: "&#FF6B6B✖ &#CED4DAᴜɴᴋɴᴏᴡɴ ᴄᴏᴍᴍᴀɴᴅ. ᴛʏᴘᴇ &#66FCF1/setting help &#CED4DAғᴏʀ ʜᴇʟᴘ."
+  setting-not-found: "&#FF6B6B✖ &#CED4DAsᴇᴛᴛɪɴɢ &#FF8787'%setting%' &#CED4DAᴡᴀs ɴᴏᴛ ғᴏᴜɴᴅ."
+  setting-already-exists: "&#FF6B6B✖ &#CED4DAᴀ sᴇᴛᴛɪɴɢ ᴡɪᴛʜ ɪᴅ &#FF8787'%setting%' &#CED4DAᴀʟʀᴇᴀᴅʏ ᴇxɪsᴛs."
+  setting-added: "&#51CF66✔ &#CED4DAᴄʀᴇᴀᴛᴇᴅ sᴇᴛᴛɪɴɢ &#66FCF1%setting% &#CED4DAᴀᴛ sʟᴏᴛ &#66FCF1#%slot%&#CED4DA!"
+  setting-deleted: "&#51CF66✔ &#CED4DAsᴇᴛᴛɪɴɢ &#66FCF1%setting% &#CED4DAʜᴀs ʙᴇᴇɴ ᴅᴇʟᴇᴛᴇᴅ."
+  setting-edited: "&#51CF66✔ &#CED4DAᴜᴘᴅᴀᴛᴇᴅ &#66FCF1%property% &#CED4DAғᴏʀ &#66FCF1%setting%&#CED4DA: &#FFFFFF%value%"
+  setting-toggled: "&#66FCF1%setting% &#CED4DAɪs ɴᴏᴡ %status%&#CED4DA."
+  invalid-slot: "&#FF6B6B✖ &#CED4DAsʟᴏᴛ ᴍᴜsᴛ ʙᴇ ᴀ ɴᴜᴍʙᴇʀ ʙᴇᴛᴡᴇᴇɴ 0 ᴀɴᴅ %max%."
+  invalid-material: "&#FF6B6B✖ &#CED4DAᴜɴᴋɴᴏᴡɴ ᴍᴀᴛᴇʀɪᴀʟ &#FF8787'%material%'&#CED4DA."
+  no-item-in-hand: "&#FF6B6B✖ &#CED4DAʏᴏᴜ ᴍᴜsᴛ ʜᴏʟᴅ ᴀɴ ɪᴛᴇᴍ ɪɴ ʏᴏᴜʀ ᴍᴀɪɴ ʜᴀɴᴅ."
+  reload-success: "&#51CF66✔ &#CED4DAᴄᴏɴғɪɢᴜʀᴀᴛɪᴏɴ ᴀɴᴅ sᴇᴛᴛɪɴɢs ʀᴇʟᴏᴀᴅᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ!"
+  usage:
+    - "&#495057&m──────────────────────────────────────────────────"
+    - "&#66FCF1&lᴇᴀsʏsᴇᴛᴛɪɴɢs &#868E96│ &#CED4DAᴄᴏᴍᴍᴀɴᴅs"
+    - "&b/setting &#868E96▸ &#CED4DAᴏᴘᴇɴ sᴇᴛᴛɪɴɢs ɢᴜɪ"
+    - "&b/setting editor &#868E96▸ &#CED4DAᴏᴘᴇɴ ᴠɪsᴜᴀʟ ɢᴜɪ ᴇᴅɪᴛᴏʀ"
+    - "&b/setting add <id> &#868E96▸ &#CED4DAᴀᴅᴅ ᴀ ɴᴇᴡ sᴇᴛᴛɪɴɢ ᴠɪᴀ ᴄᴏᴍᴍᴀɴᴅ"
+    - "&b/setting delete <id> &#868E96▸ &#CED4DAᴅᴇʟᴇᴛᴇ ᴀ sᴇᴛᴛɪɴɢ"
+    - "&b/setting edit <id> &#868E96▸ &#CED4DAᴏᴘᴇɴ ɪɴsᴘᴇᴄᴛᴏʀ ɢᴜɪ ғᴏʀ sᴇᴛᴛɪɴɢ"
+    - "&b/setting edit <id> <prop> <val> &#868E96▸ &#CED4DAǫᴜɪᴄᴋ ᴇᴅɪᴛ ᴠɪᴀ ᴄᴏᴍᴍᴀɴᴅ"
+    - "&b/setting list &#868E96▸ &#CED4DAʟɪsᴛ ᴀʟʟ ʀᴇɢɪsᴛᴇʀᴇᴅ sᴇᴛᴛɪɴɢs"
+    - "&b/setting reload &#868E96▸ &#CED4DAʀᴇʟᴏᴀᴅ ᴄᴏɴғɪɢ ᴀɴᴅ sᴇᴛᴛɪɴɢs"
+    - "&#495057&m──────────────────────────────────────────────────"
