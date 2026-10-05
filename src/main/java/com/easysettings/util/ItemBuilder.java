@@ -64,9 +64,18 @@ public class ItemBuilder {
     }
 
     public ItemBuilder glowing(boolean glowing) {
-        if (meta != null && glowing) {
-            meta.addEnchant(Enchantment.LUCK, 1, true);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        if (meta != null) {
+            try {
+                // Native 1.20.5+ and 1.21+ (Mounts of Mayhem / Tricky Trials)
+                java.lang.reflect.Method glintMethod = meta.getClass().getMethod("setEnchantmentGlintOverride", Boolean.class);
+                glintMethod.invoke(meta, glowing);
+            } catch (Throwable ignored) {
+                // Fallback for 1.20 - 1.20.4
+                if (glowing) {
+                    meta.addEnchant(Enchantment.LUCK, 1, true);
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                }
+            }
         }
         return this;
     }
