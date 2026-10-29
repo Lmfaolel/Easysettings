@@ -44,11 +44,7 @@ public class GUIManager {
 
         // Fill background if enabled
         if (config.isFillerEnabled()) {
-            ItemStack filler = new ItemBuilder(config.getFillerMaterial())
-                    .name(config.getFillerName())
-                    .hideAllAttributes()
-                    .build();
-
+            ItemStack filler = config.getCachedFillerItem();
             for (int i = 0; i < size; i++) {
                 inv.setItem(i, filler);
             }
@@ -59,12 +55,7 @@ public class GUIManager {
             int closeSlot = config.getCloseButtonSlot();
             if (closeSlot >= 0 && closeSlot < size) {
                 holder.setCloseButtonSlot(closeSlot);
-                ItemStack closeItem = new ItemBuilder(config.getCloseButtonMaterial())
-                        .name(config.getCloseButtonName())
-                        .lore(config.getCloseButtonLore())
-                        .hideAllAttributes()
-                        .build();
-                inv.setItem(closeSlot, closeItem);
+                inv.setItem(closeSlot, config.getCachedCloseItem());
             }
         }
 

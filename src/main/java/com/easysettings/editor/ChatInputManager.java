@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Map;
 import java.util.UUID;
@@ -17,19 +18,30 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
- * Manages awaiting chat input from players (e.g. when typing display names, lore, actions).
+ * Manages awaiting chat input with automatic timeout to prevent memory leaks.
  */
 public class ChatInputManager implements Listener {
 
     private final EasySettings plugin;
-    private final Map<UUID, Consumer<String>> pendingPrompts = new ConcurrentHashMap<>();
+
+    private static class PromptSession {
+        final Consumer<String> callback;
+        final BukkitTask timeoutTask;
+
+        PromptSession(Consumer<String> callback, BukkitTask timeoutTask) {
+            this.callback = callback;
+            this.timeoutTask = timeoutTask;
+        }
+    }
+
+    private final Map<UUID, PromptSession> pendingSessions = new ConcurrentHashMap<>();
 
     public ChatInputManager(EasySettings plugin) {
         this.plugin = plugin;
     }
 
     /**
-     * Awaits text input from the player in chat.
+     * Awaits text input from the player in chat with automatic 60-second expiration.
      *
      * @param player      Player to await input from
      * @param promptTitle Description shown to the player
@@ -38,8 +50,22 @@ public class ChatInputManager implements Listener {
     public void awaitInput(Player player, String promptTitle, Consumer<String> callback) {
         if (player == null || callback == null) return;
 
+        cancelInput(player);
         player.closeInventory();
-        pendingPrompts.put(player.getUniqueId(), callback);
+
+        UUID uuid = player.getUniqueId();
+
+        // Auto-expire after 60 seconds (1200 ticks) to prevent memory leaks from abandoned prompts
+        BukkitTask timeoutTask = Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            PromptSession session = pendingSessions.remove(uuid);
+            if (session != null && player.isOnline()) {
+                player.sendMessage(ColorUtil.colorize("&#FFA94D✖ &#CED4DAᴇᴅɪᴛᴏʀ ɪɴᴘᴜᴛ ᴛɪᴍᴇᴅ ᴏᴜᴛ."));
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f);
+                plugin.getEditorManager().openMainEditor(player);
+            }
+        }, 1200L);
+
+        pendingSessions.put(uuid, new PromptSession(callback, timeoutTask));
 
         player.sendMessage(ColorUtil.colorize("&#495057&m──────────────────────────────────────────"));
         player.sendMessage(ColorUtil.colorize("&#66FCF1&lsᴇᴛᴛɪɴɢs ᴇᴅɪᴛᴏʀ &#495057» &#CED4DA" + promptTitle));
@@ -50,22 +76,29 @@ public class ChatInputManager implements Listener {
     }
 
     public boolean isAwaitingInput(Player player) {
-        return player != null && pendingPrompts.containsKey(player.getUniqueId());
+        return player != null && pendingSessions.containsKey(player.getUniqueId());
     }
 
     public void cancelInput(Player player) {
         if (player != null) {
-            pendingPrompts.remove(player.getUniqueId());
+            PromptSession session = pendingSessions.remove(player.getUniqueId());
+            if (session != null && session.timeoutTask != null) {
+                session.timeoutTask.cancel();
+            }
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        Consumer<String> callback = pendingPrompts.remove(player.getUniqueId());
+        PromptSession session = pendingSessions.remove(player.getUniqueId());
 
-        if (callback != null) {
+        if (session != null) {
             event.setCancelled(true);
+            if (session.timeoutTask != null) {
+                session.timeoutTask.cancel();
+            }
+
             String message = event.getMessage().trim();
 
             if (message.equalsIgnoreCase("cancel")) {
@@ -80,7 +113,7 @@ public class ChatInputManager implements Listener {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.5f);
                 try {
-                    callback.accept(message);
+                    session.callback.accept(message);
                 } catch (Exception e) {
                     player.sendMessage(ColorUtil.colorize("&#FF6B6B✖ &#CED4DAError processing input: " + e.getMessage()));
                     plugin.getLogger().warning("Error processing chat editor input: " + e.getMessage());
@@ -91,6 +124,15 @@ public class ChatInputManager implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        pendingPrompts.remove(event.getPlayer().getUniqueId());
+        cancelInput(event.getPlayer());
+    }
+
+    public void shutdown() {
+        for (PromptSession session : pendingSessions.values()) {
+            if (session.timeoutTask != null) {
+                session.timeoutTask.cancel();
+            }
+        }
+        pendingSessions.clear();
     }
 }

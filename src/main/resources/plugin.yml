@@ -1,9 +1,9 @@
 name: EasySettings
 version: 1.0.0
 main: com.easysettings.EasySettings
-api-version: '1.20'
-author: EasySettings
-description: A customizable GUI settings plugin with a robust Developer API and in-game editor.
+api-version: '1.21'
+author: X3vro
+description: Ultra-performance customizable GUI settings plugin with zero-leak memory management, fluent Developer API, and in-game visual editor for Minecraft 1.20 - 1.21.11 (Mounts of Mayhem).
 softdepend: [PlaceholderAPI]
 
 commands:

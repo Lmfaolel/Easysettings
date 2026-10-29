@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Executes configured and custom actions for players when settings are interacted with.
+ * Executes configured and custom actions for players with zero-latency thread dispatch.
  */
 public class ActionManager {
 
@@ -141,7 +141,11 @@ public class ActionManager {
             command = command.substring(1);
         }
         final String cmd = command;
-        Bukkit.getScheduler().runTask(plugin, () -> player.performCommand(cmd));
+        if (Bukkit.isPrimaryThread()) {
+            player.performCommand(cmd);
+        } else {
+            Bukkit.getScheduler().runTask(plugin, () -> player.performCommand(cmd));
+        }
     }
 
     private void executeConsoleCommand(String command) {
@@ -149,7 +153,11 @@ public class ActionManager {
             command = command.substring(1);
         }
         final String cmd = command;
-        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd));
+        if (Bukkit.isPrimaryThread()) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+        } else {
+            Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd));
+        }
     }
 
     private void sendMessage(Player player, String message) {
@@ -175,11 +183,19 @@ public class ActionManager {
     }
 
     private void closeInventory(Player player) {
-        Bukkit.getScheduler().runTask(plugin, player::closeInventory);
+        if (Bukkit.isPrimaryThread()) {
+            player.closeInventory();
+        } else {
+            Bukkit.getScheduler().runTask(plugin, player::closeInventory);
+        }
     }
 
     private void refreshGUI(Player player) {
-        Bukkit.getScheduler().runTask(plugin, () -> plugin.getGuiManager().openGUI(player));
+        if (Bukkit.isPrimaryThread()) {
+            plugin.getGuiManager().openGUI(player);
+        } else {
+            Bukkit.getScheduler().runTask(plugin, () -> plugin.getGuiManager().openGUI(player));
+        }
     }
 
     private void handleApiAction(Player player, String argument) {
@@ -205,5 +221,9 @@ public class ActionManager {
         } else {
             plugin.getLogger().warning("No API action handler registered for key: '" + key + "'");
         }
+    }
+
+    public void shutdown() {
+        customActionHandlers.clear();
     }
 }

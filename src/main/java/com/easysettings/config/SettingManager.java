@@ -239,11 +239,44 @@ public class SettingManager {
         saveConfigFile();
     }
 
-    private void saveConfigFile() {
+    public synchronized void saveConfigFile() {
+        if (settingsConfig == null || settingsFile == null) return;
+
+        // Serialize to string in memory (zero disk I/O on main thread)
+        final String serialized;
         try {
-            settingsConfig.save(settingsFile);
-        } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Could not save settings.yml!", e);
+            serialized = settingsConfig.saveToString();
+        } catch (Exception e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to serialize settings.yml", e);
+            return;
+        }
+
+        if (!plugin.isEnabled()) {
+            writeStringToFile(serialized);
+            return;
+        }
+
+        // Async write to disk so main thread never hitches during GUI editing
+        org.bukkit.Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> writeStringToFile(serialized));
+    }
+
+    private synchronized void writeStringToFile(String data) {
+        File parent = settingsFile.getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
+        }
+        File tempFile = new File(settingsFile.getParentFile(), settingsFile.getName() + ".tmp");
+        try {
+            java.nio.file.Files.writeString(tempFile.toPath(), data, java.nio.charset.StandardCharsets.UTF_8);
+            java.nio.file.Files.move(tempFile.toPath(), settingsFile.toPath(),
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING,
+                    java.nio.file.StandardCopyOption.ATOMIC_MOVE);
+        } catch (Exception e) {
+            try {
+                java.nio.file.Files.writeString(settingsFile.toPath(), data, java.nio.charset.StandardCharsets.UTF_8);
+            } catch (IOException ex) {
+                plugin.getLogger().log(Level.SEVERE, "Could not save settings.yml!", ex);
+            }
         }
     }
 

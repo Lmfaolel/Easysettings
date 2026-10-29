@@ -14,6 +14,21 @@ import java.util.List;
  */
 public class ItemBuilder {
 
+    private static final java.lang.reflect.Method GLINT_OVERRIDE_METHOD;
+    private static final boolean HAS_GLINT_OVERRIDE;
+
+    static {
+        java.lang.reflect.Method method = null;
+        boolean has = false;
+        try {
+            method = ItemMeta.class.getMethod("setEnchantmentGlintOverride", Boolean.class);
+            has = true;
+        } catch (Throwable ignored) {
+        }
+        GLINT_OVERRIDE_METHOD = method;
+        HAS_GLINT_OVERRIDE = has;
+    }
+
     private final ItemStack item;
     private final ItemMeta meta;
 
@@ -65,16 +80,17 @@ public class ItemBuilder {
 
     public ItemBuilder glowing(boolean glowing) {
         if (meta != null) {
-            try {
-                // Native 1.20.5+ and 1.21+ (Mounts of Mayhem / Tricky Trials)
-                java.lang.reflect.Method glintMethod = meta.getClass().getMethod("setEnchantmentGlintOverride", Boolean.class);
-                glintMethod.invoke(meta, glowing);
-            } catch (Throwable ignored) {
-                // Fallback for 1.20 - 1.20.4
-                if (glowing) {
-                    meta.addEnchant(Enchantment.LUCK, 1, true);
-                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            if (HAS_GLINT_OVERRIDE && GLINT_OVERRIDE_METHOD != null) {
+                try {
+                    GLINT_OVERRIDE_METHOD.invoke(meta, glowing);
+                    return this;
+                } catch (Throwable ignored) {
                 }
+            }
+            // Fallback for 1.20 - 1.20.4
+            if (glowing) {
+                meta.addEnchant(Enchantment.LUCK, 1, true);
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
         }
         return this;

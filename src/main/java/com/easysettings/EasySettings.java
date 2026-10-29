@@ -77,18 +77,31 @@ public class EasySettings extends JavaPlugin {
             }
         }
 
-        // 2. Synchronously save all player states to disk
+        // 2. Synchronously save all player states to disk and shutdown data manager
         if (playerDataManager != null) {
-            playerDataManager.saveData();
+            playerDataManager.shutdown();
         }
 
-        // 3. Cancel all running and queued tasks
+        // 3. Shutdown chat input manager to free listeners and session tasks
+        if (editorManager != null && editorManager.getChatInputManager() != null) {
+            editorManager.getChatInputManager().shutdown();
+        }
+
+        // 4. Shutdown action manager
+        if (actionManager != null) {
+            actionManager.shutdown();
+        }
+
+        // 5. Clear ColorUtil LRU cache
+        com.easysettings.util.ColorUtil.clearCache();
+
+        // 6. Cancel all running and queued tasks
         getServer().getScheduler().cancelTasks(this);
 
-        // 4. Cleanly unregister all listeners to avoid memory leaks with Plugman
+        // 7. Cleanly unregister all listeners to avoid memory leaks with Plugman
         org.bukkit.event.HandlerList.unregisterAll(this);
 
-        // 5. Clean static references
+        // 8. Clean static references
         EasySettingsAPI.setPlugin(null);
         instance = null;
 
