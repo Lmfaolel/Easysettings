@@ -150,4 +150,4 @@ Built with Maven and Java 17:
 mvn clean package
 ```
 Compiled output JAR is generated at:
-`target/EasySettings-1.0.0.jar`
+`target/EasySettings-1.1.0.jar`
